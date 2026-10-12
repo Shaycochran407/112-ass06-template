@@ -15,7 +15,38 @@
  * 3. Implement each TODO below
  */
 
-#include "code.h"
+#if defined(__has_include)
+#  if __has_include("code.h")
+#    include "code.h"
+#  endif
+#endif
+
+#ifndef ASS06_DOUBLEPOINT_TYPE_DEFINED
+
+typedef struct int_Point {
+    int x;
+    int y;
+} int_Point;
+
+typedef struct double_Point {
+    double x;
+    double y;
+} double_Point;
+
+typedef struct double_Point DoublePoint;
+
+struct Calc {
+    float a;
+    float b;
+    float (*add)(float, float);
+    float (*sub)(float, float);
+    float (*mul)(float, float);
+    float (*div)(float, float);
+};
+
+#  define ASS06_DOUBLEPOINT_TYPE_DEFINED 1
+#endif
+
 #include <stdio.h>
 
 /*
@@ -36,10 +67,10 @@
  *   // Now p.x = 10, p.y = 20
  */
 
-void init_int_point(struct int_Point *point, int x, int y)
+void init_int_point(int_Point *point, int x, int y)
 {
-    /* TODO: Set point->x = x; */
-    /* TODO: Set point->y = y; */
+ point->x = x;
+ point->y = y;
 }
 
 /*
@@ -54,8 +85,8 @@ void init_int_point(struct int_Point *point, int x, int y)
 
 void init_double_point(struct double_Point *point, double x, double y)
 {
-    /* TODO: Set point->x = x; */
-    /* TODO: Set point->y = y; */
+ point->x = x;
+ point->y = y;
 }
 
 /*
@@ -68,22 +99,25 @@ void init_double_point(struct double_Point *point, double x, double y)
 
 float add(float a, float b)
 {
-    /* TODO: Return a + b; */
+    return a + b;
 }
 
 float sub(float a, float b)
 {
-    /* TODO: Return a - b; */
+    return a - b;
 }
 
 float mul(float a, float b)
 {
-    /* TODO: Return a * b; */
+    return a * b;
 }
 
 float divide(float a, float b)
 {
-    /* TODO: Return a / b; (handle division by zero if needed) */
+    if (b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
 }
 
 /*
@@ -112,7 +146,17 @@ float divide(float a, float b)
 
 double apply_operation(float *arr, int length, float (*operation)(float, float))
 {
-    /* TODO: */
+    if (length <= 0 || arr == NULL) {
+        return 0.0;
+    }
+
+    float result = arr[0];
+
+    for (int i = 1; i < length; i++) {
+        result = operation(result, arr[i]);
+    }
+
+    return (double)result;
 }
 
 /*
@@ -125,10 +169,11 @@ double apply_operation(float *arr, int length, float (*operation)(float, float))
  * Same as Step 2, but uses the DoublePoint typedef
  */
 
-// void init_double_point_typedef(DoublePoint *point, double x, double y)
-// {
-//     /* TODO:*/
-// }
+void init_double_point_typedef(DoublePoint *point, double x, double y)
+{
+    point->x = x;
+    point->y = y;
+}
 
 /*
  * ============================================================================
@@ -154,5 +199,10 @@ double apply_operation(float *arr, int length, float (*operation)(float, float))
 
 void init_calc(struct Calc *calc)
 {
-    /* TODO */
+    calc->a = 0.0f;
+    calc->b = 0.0f;
+    calc->add = add;
+    calc->sub = sub;
+    calc->mul = mul;
+    calc->div = divide;
 }
